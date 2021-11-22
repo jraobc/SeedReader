@@ -1,0 +1,240 @@
+USE [master]
+GO
+
+IF EXISTS(select * from sys.databases where name= 'KnowBetterDB' )
+	BEGIN
+		PRINT '~~KnowBetterDB :: Dropping the old DB'
+		DROP DATABASE KnowBetterDB
+	END
+
+/****** Object:  Database [KnowBetterDB]    Script Date: 11/18/2021 8:09:02 PM ******/
+CREATE DATABASE [KnowBetterDB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'KnowBetterDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQL\DATA\KnowBetterDB.mdf' , SIZE = 524288KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'KnowBetterDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQL\DATA\KnowBetterDB_log.ldf' , SIZE = 131072KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [KnowBetterDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+
+ALTER DATABASE [KnowBetterDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET ANSI_NULLS OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET ANSI_PADDING OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET ANSI_WARNINGS OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET ARITHABORT OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET AUTO_CLOSE OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET AUTO_SHRINK OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET QUOTED_IDENTIFIER OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET  DISABLE_BROKER 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET TRUSTWORTHY OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET PARAMETERIZATION SIMPLE 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET RECOVERY SIMPLE 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET  MULTI_USER 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET PAGE_VERIFY CHECKSUM  
+GO
+
+ALTER DATABASE [KnowBetterDB] SET DB_CHAINING OFF 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+
+ALTER DATABASE [KnowBetterDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+
+ALTER DATABASE [KnowBetterDB] SET QUERY_STORE = OFF
+GO
+
+ALTER DATABASE [KnowBetterDB] SET  READ_WRITE 
+GO
+
+
+-----------------------------------
+-- CREATE THE PRODUCT TABLE
+------------------------------------
+USE [KnowBetterDB]
+GO
+
+/****** Object:  Table [dbo].[Product]    Script Date: 11/20/2021 8:56:53 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Product](
+	[ProductID] [int] IDENTITY(1,1) NOT NULL,
+	[Brand] [varchar](100) NOT NULL,
+	[ProductName] [varchar](150) NOT NULL,
+ CONSTRAINT [PK_Product] PRIMARY KEY CLUSTERED 
+(
+	[ProductID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [uc_ProductNameBrand] UNIQUE NONCLUSTERED 
+(
+	[ProductName] ASC,
+	[Brand] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+-----------------------------------
+-- CREATE THE Ingredient TABLE
+------------------------------------
+USE [KnowBetterDB]
+GO
+
+/****** Object:  Table [dbo].[Ingredient]    Script Date: 11/20/2021 8:58:24 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Ingredient](
+	[IngredientID] [int] IDENTITY(1,1) NOT NULL,
+	[IngredientName] [varchar](150) NOT NULL,
+ CONSTRAINT [PK_Ingredient] PRIMARY KEY CLUSTERED 
+(
+	[IngredientID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [uc_IngredientName] UNIQUE NONCLUSTERED 
+(
+	[IngredientName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+
+-----------------------------------
+-- CREATE THE Ingredient TABLE
+------------------------------------
+USE [KnowBetterDB]
+GO
+
+/****** Object:  Table [dbo].[ProductIngredient]    Script Date: 11/20/2021 8:58:51 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ProductIngredient](
+	[ProductID] [int] NOT NULL,
+	[IngredientID] [int] NOT NULL
+) ON [PRIMARY]
+GO
+
+
+
+
+---------------------------------------
+-- CREATE THE LOGIN
+---------------------------------------
+IF EXISTS (SELECT name FROM master.sys.server_principals WHERE name = 'KB_Admin')
+	BEGIN
+		PRINT '~~KnowBetterDB :: Droping the old login'
+		DROP LOGIN [KB_Admin]
+	END
+GO
+
+CREATE LOGIN [KB_Admin] WITH PASSWORD='abc123', DEFAULT_DATABASE=[KnowBetterDB], DEFAULT_LANGUAGE=[us_english], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+------------------------------------
+-- CREATE THE USER
+------------------------------------
+USE [KnowBetterDB]
+GO
+
+IF  EXISTS (SELECT * FROM sys.database_principals WHERE name = 'KB_Admin')
+	BEGIN
+		PRINT '~~KnowBetterDB:: Dropping the old user'
+		DROP USER [KB_Admin]
+	END
+	
+
+CREATE USER [KB_Admin] FOR LOGIN [KB_Admin] WITH DEFAULT_SCHEMA=[dbo]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [KB_Admin]
+GO
+ALTER ROLE [db_datawriter] ADD MEMBER [KB_Admin]
+GO
+
+PRINT ''
+PRINT '~~KnowBetterBD :: Finished the DB Setup'
